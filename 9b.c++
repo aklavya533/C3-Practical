@@ -1,3 +1,4 @@
+//Implement QUEUE using Linked List.
 #include <iostream>
 using namespace std;
 
