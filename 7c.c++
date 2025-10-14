@@ -1,68 +1,65 @@
-//Circularly linked list
-#include<iostream>
+// Circularly linked  list 
+#include <iostream>
+#include <vector>
 using namespace std;
+
 struct Node {
     int data;
-Node* left;
-Node* right;
-Node* up;
-Node* down;
+    Node* left;
+    Node* right;
+    Node* up;
+    Node* down;
+    Node(int v = 0) : data(v), left(nullptr), right(nullptr), up(nullptr), down(nullptr) {}
 };
-Node* createNode(int value) {
-    Node* temp = new Node();
-    temp->data = value;
-    temp->left = temp->right = temp->up = temp->down = NULL;
-    return temp;
+
+// create a K x K circular 2D grid of nodes with sequential data starting at 1
+Node* createGrid(int K) {
+    if (K <= 0) return nullptr;
+    vector<vector<Node*>> a(K, vector<Node*>(K, nullptr));
+    int val = 1;
+    for (int i = 0; i < K; ++i)
+        for (int j = 0; j < K; ++j)
+            a[i][j] = new Node(val++);
+
+    // link rows (left/right) circularly
+    for (int i = 0; i < K; ++i) {
+        for (int j = 0; j < K; ++j) {
+            a[i][j]->right = a[i][(j + 1) % K];
+            a[i][j]->left  = a[i][(j - 1 + K) % K];
+        }
+    }
+
+    // link columns (up/down) circularly
+    for (int j = 0; j < K; ++j) {
+        for (int i = 0; i < K; ++i) {
+            a[i][j]->down = a[(i + 1) % K][j];
+            a[i][j]->up   = a[(i - 1 + K) % K][j];
+        }
+    }
+
+    return a[0][0];
 }
-Node* createKSL(int K){
-    int Nuum = 1;
-    int limit = K;
-    Node* head = Null;
-    Node* rowPointer = Null;
-    for (int i = 0; i < K; i++){
-        Node* tempList = create L wapp(limit,rNum);
-        if (head == NULL){
-            head = tempList;
-            rowPointer = head;
-            }
-            else{
-                rowPointer->down tempList;
-                rowPointer = rowPointer->down 
-            }
-            rNum = rNum + K;
-            limit = limit + K;  
-        }
-    return head;
-    }
-    void merge KlWRP(Node* head){
-        Node* first = NULL;
-        Node* second = NULL;
-        Node* start = head;
-        first = head;
-        second = first->down;
-        while (second){
-            while (first // second){
-                first-> down = second;
-            first= first->right;
-            second = second->right;
-            }
-            first = start->down;
-            second = first->down;
-            start = start->down;
-        }
-    }
-    void createLEFC(Node* head){
-        Node* first = NULL;
-        Node* last = NULL;
-        first = head;
-        last = head;
-        while (last ->down){
-            last = last->down;
-        }
-         while (first // last){
-            last -> down = first;
-            first = first -> right;
-            last = last -> right;
-         }
-    }
+
+// display the K x K circular grid starting from head
+void display(Node* head) {
+    if (!head) return;
+    Node* rowStart = head;
+    Node* curRow = rowStart;
+    do {
+        Node* cur = curRow;
+        do {
+            cout << cur->data << " ";
+            cur = cur->right;
+        } while (cur != curRow);
+        cout << '\n';
+        curRow = curRow->down;
+    } while (curRow != rowStart);
+}
+
+int main() {
+    int K;
+    if (!(cin >> K)) return 0;
+    Node* head = createGrid(K);
+    display(head);
+    return 0;
 }
